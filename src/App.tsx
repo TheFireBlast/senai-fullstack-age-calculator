@@ -17,13 +17,17 @@ function useAge(
     now: Date,
 ): [Age, (info: DateInfo) => void] {
     const calcAge = (date: Date) => {
-        const diffTime = Math.abs(now.getTime() - date.getTime());
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diff = Math.floor(now.getTime() - date.getTime());
+        const day = 1000 * 60 * 60 * 24;
+
+        const days = Math.floor(diff / day);
+        const months = Math.floor(days / 31);
+        const years = Math.floor(months / 12);
 
         return {
-            years: Math.floor(diffDays / 365),
-            months: Math.floor((diffDays % 365) / 30),
-            days: diffDays % 30,
+            days: days % 30,
+            months: months % 12,
+            years,
         };
     };
     const setDate = (info: DateInfo) => {
@@ -35,6 +39,9 @@ function useAge(
         setAge(calcAge(date));
     };
     const isInvalid = (info: DateInfo) => {
+        const time = new Date(
+            `${info.year}-${info.month}-${info.day}`,
+        ).getTime();
         return (
             isNaN(info.day) ||
             isNaN(info.month) ||
@@ -42,7 +49,8 @@ function useAge(
             info.day == 0 ||
             info.month == 0 ||
             info.year == 0 ||
-            isNaN(new Date(info.year, info.month - 1, info.day).getTime())
+            isNaN(time) ||
+            time > now.getTime()
         );
     };
 
@@ -61,7 +69,6 @@ function App() {
     const [day, setDay] = useState("");
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
-    // const [auto, setAuto] = useState(false);
 
     const [{ years, months, days }, updateAge] = useAge(
         { year: 2000, month: 1, day: 1 },
@@ -101,7 +108,7 @@ function App() {
                                 day: parseInt(day),
                             });
                         }}
-                        className="cursor-pointer rounded-full bg-purple-600 p-2"
+                        className="cursor-pointer rounded-full bg-purple-600 p-2 transition hover:bg-purple-500"
                     >
                         <img
                             className="size-8"
