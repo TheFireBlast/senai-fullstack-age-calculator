@@ -152,6 +152,7 @@ function App() {
                         className="min-w-0"
                     />
                 </div>
+
                 <div className="my-4 flex items-center gap-4">
                     <div className="h-px grow border-t border-t-black/40"></div>
                     <button
@@ -164,16 +165,17 @@ function App() {
                                 day: parseInt(day),
                             });
                         }}
-                        className="cursor-pointer rounded-full bg-purple-600 p-3 transition hover:bg-black"
+                        className="cursor-pointer rounded-full bg-purple-600 p-4 transition hover:bg-black"
                     >
                         <img
-                            className="size-10"
+                            className="size-8"
                             src={"assets/images/icon-arrow.svg"}
                             alt="ENTER"
                         />
                     </button>
                     <div className="h-px grow border-t border-t-black/40 sm:grow-0"></div>
                 </div>
+
                 <div>
                     <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
