@@ -19,7 +19,7 @@ interface BirthErrors {
 
 function useAge(initialInfo: BirthDate, now: Date) {
     function calcAge(info: BirthDate): [Age, BirthErrors | undefined] {
-        const errors = getBirthErrors(info, now);
+        const errors = getBirthErrors(info, now.getTime());
         if (errors) {
             return [{ years: NaN, months: NaN, days: NaN }, errors];
         }
@@ -60,34 +60,44 @@ function cleanInput(input: string) {
 }
 function getBirthErrors(
     { year, month, day }: BirthDate,
-    now: Date = new Date(),
+    now: number = Date.now(),
 ): BirthErrors | undefined {
     let d: string | boolean | undefined = undefined;
     let m: string | boolean | undefined = undefined;
     let y: string | boolean | undefined = undefined;
 
-    const timeYear = new Date(`${year}-1-1`).getTime();
-    const timeMonth = new Date(`${year}-${month}-1`).getTime();
-    const time = new Date(`${year}-${month}-${day}`).getTime();
     let past = false;
+
     if (isNaN(year)) y = "required field";
     else if (year <= 0) y = "invalid year";
+    else {
+        const timeYear = new Date(`${year}-1-1`).getTime();
+        if (timeYear > now) {
+            y = "must be in the past";
+            past = true;
+        }
+    }
+
     if (isNaN(month)) m = "required field";
     else if (month <= 0 || month > 12) m = "invalid month";
+    else {
+        const timeMonth = new Date(`${year}-${month}-1`).getTime();
+        if (!past && timeMonth > now) {
+            m = "must be in the past";
+            past = true;
+        }
+    }
+
+    const time = new Date(`${year}-${month}-${day}`).getTime();
     if (isNaN(day)) d = "required field";
     else if (day <= 0 || day > 31) d = "invalid day";
-    if (timeYear > now.getTime()) {
-        y = "must be in the past";
-        past = true;
+    else {
+        if (!past && time > now) {
+            d = "must be in the past";
+        }
     }
-    if (!past && timeMonth > now.getTime()) {
-        m = "must be in the past";
-        past = true;
-    }
-    if (!past && time > now.getTime()) {
-        d = "must be in the past";
-    }
-    if (isNaN(time) || time > now.getTime()) {
+
+    if (isNaN(time) || time > now) {
         if (!d && !m && !y) {
             d = "invalid date";
         }
