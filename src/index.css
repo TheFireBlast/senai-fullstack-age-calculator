@@ -1,9 +1,34 @@
 @import "tailwindcss";
 
-:root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
     font-weight: 400;
+    src: url("/public/assets/fonts/Poppins-Regular.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/public/assets/fonts/Poppins-Bold.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: italic;
+    font-weight: 400;
+    src: url("/public/assets/fonts/Poppins-Italic.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Poppins";
+    font-style: italic;
+    font-weight: 700;
+    src: url("/public/assets/fonts/Poppins-BoldItalic.ttf") format("truetype");
+}
+
+:root {
+    font-family: "Poppins", system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 700;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;

@@ -108,29 +108,29 @@ function App() {
                                 day: parseInt(day),
                             });
                         }}
-                        className="cursor-pointer rounded-full bg-purple-600 p-2 transition hover:bg-purple-500"
+                        className="cursor-pointer rounded-full bg-purple-600 p-3 transition hover:bg-black"
                     >
                         <img
-                            className="size-8"
+                            className="size-10"
                             src={"assets/images/icon-arrow.svg"}
                             alt="ENTER"
                         />
                     </button>
                 </div>
                 <div>
-                    <div className="text-2xl font-bold italic">
+                    <div className="text-6xl font-bold italic">
                         <span className="text-purple-800">
                             {isNaN(years) ? "--" : years}
                         </span>{" "}
                         years
                     </div>
-                    <div className="text-2xl font-bold italic">
+                    <div className="text-6xl font-bold italic">
                         <span className="text-purple-800">
                             {isNaN(months) ? "--" : months}
                         </span>{" "}
                         months
                     </div>
-                    <div className="text-2xl font-bold italic">
+                    <div className="text-6xl font-bold italic">
                         <span className="text-purple-800">
                             {isNaN(days) ? "--" : days}
                         </span>{" "}
