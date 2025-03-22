@@ -111,7 +111,7 @@ function App() {
     );
 
     return (
-        <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 p-4">
+        <form className="flex min-h-screen w-full items-center justify-center bg-gray-100 p-4">
             <div className="w-[40rem] max-w-full rounded-2xl rounded-br-[5rem] bg-white p-8 shadow-xl sm:rounded-br-[10rem]">
                 <div className="flex gap-4">
                     <Input
@@ -142,7 +142,9 @@ function App() {
                 <div className="my-4 flex items-center gap-4">
                     <div className="h-px grow border-t border-t-black/40"></div>
                     <button
-                        onClick={() => {
+                        type="submit"
+                        onClick={(ev) => {
+                            ev.preventDefault();
                             updateAge({
                                 year: parseInt(year),
                                 month: parseInt(month),
@@ -180,7 +182,7 @@ function App() {
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     );
 }
 
