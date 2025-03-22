@@ -63,6 +63,10 @@ function useAge(
     return [age, setDate];
 }
 
+function cleanInput(input: string) {
+    return input.replace(/[^0-9]+/g, "");
+}
+
 function App() {
     const now = new Date();
 
@@ -71,7 +75,7 @@ function App() {
     const [year, setYear] = useState("");
 
     const [{ years, months, days }, updateAge] = useAge(
-        { year: 2000, month: 1, day: 1 },
+        { year: NaN, month: NaN, day: NaN },
         now,
     );
 
@@ -82,21 +86,21 @@ function App() {
                     <Input
                         name="DAY"
                         content={day}
-                        onChange={(e) => setDay(e.target.value.trim())}
+                        onChange={(e) => setDay(cleanInput(e.target.value))}
                         placeholder={"DD"}
                         className="min-w-0"
                     />
                     <Input
                         name="MONTH"
                         content={month}
-                        onChange={(e) => setMonth(e.target.value.trim())}
+                        onChange={(e) => setMonth(cleanInput(e.target.value))}
                         placeholder={"MM"}
                         className="min-w-0"
                     />
                     <Input
                         name="YEAR"
                         content={year}
-                        onChange={(e) => setYear(e.target.value.trim())}
+                        onChange={(e) => setYear(cleanInput(e.target.value))}
                         placeholder={"YYYY"}
                         className="min-w-0"
                     />
