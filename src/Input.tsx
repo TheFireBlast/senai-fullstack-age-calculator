@@ -15,7 +15,7 @@ export default function Input({
 }: Props) {
     return (
         <div className={"flex flex-col gap-1 " + (className || "")}>
-            <label htmlFor={name}>{name}</label>
+            <label htmlFor={name} className="text-neutral-600 tracking-widest">{name}</label>
             <input
                 type="text"
                 id={name}
