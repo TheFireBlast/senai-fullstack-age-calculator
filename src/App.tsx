@@ -70,9 +70,12 @@ function getBirthErrors(
     const timeMonth = new Date(`${year}-${month}-1`).getTime();
     const time = new Date(`${year}-${month}-${day}`).getTime();
     let past = false;
-    if (isNaN(year) || year <= 0) y = "invalid year";
-    if (isNaN(month) || month <= 0 || month > 12) m = "invalid month";
-    if (isNaN(day) || day <= 0 || day > 31) d = "invalid day";
+    if (isNaN(year)) y = "required field";
+    else if (year <= 0) y = "invalid year";
+    if (isNaN(month)) m = "required field";
+    else if (month <= 0 || month > 12) m = "invalid month";
+    if (isNaN(day)) d = "required field";
+    else if (day <= 0 || day > 31) d = "invalid day";
     if (timeYear > now.getTime()) {
         y = "must be in the past";
         past = true;
