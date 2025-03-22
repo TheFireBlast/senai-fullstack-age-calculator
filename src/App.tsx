@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Input from "./Input";
 
-interface DateInfo {
+interface BirthDate {
     year: number;
     month: number;
     day: number;
@@ -11,12 +11,21 @@ interface Age {
     months: number;
     days: number;
 }
+interface BirthErrors {
+    day: string | boolean | undefined;
+    month: string | boolean | undefined;
+    year: string | boolean | undefined;
+}
 
-function useAge(
-    initialInfo: DateInfo,
-    now: Date,
-): [Age, (info: DateInfo) => void] {
-    const calcAge = (date: Date) => {
+function useAge(initialInfo: BirthDate, now: Date) {
+    function calcAge(info: BirthDate): [Age, BirthErrors | undefined] {
+        const errors = getBirthErrors(info, now);
+        if (errors) {
+            return [{ years: NaN, months: NaN, days: NaN }, errors];
+        }
+
+        const date = new Date(info.year, info.month - 1, info.day);
+
         const diff = Math.floor(now.getTime() - date.getTime());
         const day = 1000 * 60 * 60 * 24;
 
@@ -24,47 +33,69 @@ function useAge(
         const months = Math.floor(days / 31);
         const years = Math.floor(months / 12);
 
-        return {
-            days: days % 30,
-            months: months % 12,
-            years,
-        };
-    };
-    const setDate = (info: DateInfo) => {
-        if (isInvalid(info)) {
-            setAge({ years: NaN, months: NaN, days: NaN });
-            return;
-        }
-        const date = new Date(info.year, info.month - 1, info.day);
-        setAge(calcAge(date));
-    };
-    const isInvalid = (info: DateInfo) => {
-        const time = new Date(
-            `${info.year}-${info.month}-${info.day}`,
-        ).getTime();
-        return (
-            isNaN(info.day) ||
-            isNaN(info.month) ||
-            isNaN(info.year) ||
-            info.day == 0 ||
-            info.month == 0 ||
-            info.year == 0 ||
-            isNaN(time) ||
-            time > now.getTime()
-        );
-    };
-
-    const [age, setAge] = useState({ years: NaN, months: NaN, days: NaN });
-
-    if (isInvalid(initialInfo)) {
-        return [{ years: NaN, months: NaN, days: NaN }, setDate];
+        return [
+            {
+                days: days % 30,
+                months: months % 12,
+                years,
+            },
+            undefined,
+        ];
+    }
+    function setDate(info: BirthDate) {
+        const [age, errors] = calcAge(info);
+        setAge(age);
+        setErrors(errors);
     }
 
-    return [age, setDate];
+    const [initAge] = calcAge(initialInfo);
+    const [age, setAge] = useState<Age>(initAge);
+    const [errors, setErrors] = useState<BirthErrors | undefined>(undefined);
+
+    return [age, errors, setDate] as const;
 }
 
 function cleanInput(input: string) {
     return input.replace(/[^0-9]+/g, "");
+}
+function getBirthErrors(
+    { year, month, day }: BirthDate,
+    now: Date = new Date(),
+): BirthErrors | undefined {
+    let d: string | boolean | undefined = undefined;
+    let m: string | boolean | undefined = undefined;
+    let y: string | boolean | undefined = undefined;
+
+    const timeYear = new Date(`${year}-1-1`).getTime();
+    const timeMonth = new Date(`${year}-${month}-1`).getTime();
+    const time = new Date(`${year}-${month}-${day}`).getTime();
+    let past = false;
+    if (isNaN(year) || year <= 0) y = "invalid year";
+    if (isNaN(month) || month <= 0 || month > 12) m = "invalid month";
+    if (isNaN(day) || day <= 0 || day > 31) d = "invalid day";
+    if (timeYear > now.getTime()) {
+        y = "must be in the past";
+        past = true;
+    }
+    if (!past && timeMonth > now.getTime()) {
+        m = "must be in the past";
+        past = true;
+    }
+    if (!past && time > now.getTime()) {
+        d = "must be in the past";
+    }
+    if (isNaN(time) || time > now.getTime()) {
+        if (!d && !m && !y) {
+            d = "invalid date";
+        }
+        d ||= true;
+        m ||= true;
+        y ||= true;
+    }
+
+    if (d || m || y) return { day: d, month: m, year: y };
+
+    return undefined;
 }
 
 function App() {
@@ -74,7 +105,7 @@ function App() {
     const [month, setMonth] = useState("");
     const [year, setYear] = useState("");
 
-    const [{ years, months, days }, updateAge] = useAge(
+    const [{ years, months, days }, errors, updateAge] = useAge(
         { year: NaN, month: NaN, day: NaN },
         now,
     );
@@ -88,6 +119,7 @@ function App() {
                         content={day}
                         onChange={(e) => setDay(cleanInput(e.target.value))}
                         placeholder={"DD"}
+                        error={errors?.day}
                         className="min-w-0"
                     />
                     <Input
@@ -95,6 +127,7 @@ function App() {
                         content={month}
                         onChange={(e) => setMonth(cleanInput(e.target.value))}
                         placeholder={"MM"}
+                        error={errors?.month}
                         className="min-w-0"
                     />
                     <Input
@@ -102,6 +135,7 @@ function App() {
                         content={year}
                         onChange={(e) => setYear(cleanInput(e.target.value))}
                         placeholder={"YYYY"}
+                        error={errors?.year}
                         className="min-w-0"
                     />
                 </div>
@@ -130,19 +164,19 @@ function App() {
                         <span className="text-purple-800">
                             {isNaN(years) ? "--" : years}
                         </span>{" "}
-                        years
+                        year{years !== 1 ? "s" : ""}
                     </div>
                     <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
                             {isNaN(months) ? "--" : months}
                         </span>{" "}
-                        months
+                        month{months !== 1 ? "s" : ""}
                     </div>
                     <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
                             {isNaN(days) ? "--" : days}
                         </span>{" "}
-                        days
+                        day{days !== 1 ? "s" : ""}
                     </div>
                 </div>
             </div>
