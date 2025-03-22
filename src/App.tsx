@@ -76,26 +76,29 @@ function App() {
     );
 
     return (
-        <div className="flex min-h-screen w-screen items-center justify-center bg-gray-100">
-            <div className="rounded-2xl bg-white p-8 shadow-2xl">
+        <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 p-4">
+            <div className="w-[40rem] max-w-full rounded-2xl rounded-br-[5rem] bg-white p-8 shadow-xl sm:rounded-br-[10rem]">
                 <div className="flex gap-4">
                     <Input
                         name="DAY"
                         content={day}
                         onChange={(e) => setDay(e.target.value.trim())}
                         placeholder={"DD"}
+                        className="min-w-0"
                     />
                     <Input
                         name="MONTH"
                         content={month}
                         onChange={(e) => setMonth(e.target.value.trim())}
                         placeholder={"MM"}
+                        className="min-w-0"
                     />
                     <Input
                         name="YEAR"
                         content={year}
                         onChange={(e) => setYear(e.target.value.trim())}
                         placeholder={"YYYY"}
+                        className="min-w-0"
                     />
                 </div>
                 <div className="my-4 flex items-center gap-4">
@@ -116,21 +119,22 @@ function App() {
                             alt="ENTER"
                         />
                     </button>
+                    <div className="h-px grow border-t border-t-black/40 sm:grow-0"></div>
                 </div>
                 <div>
-                    <div className="text-6xl font-bold italic">
+                    <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
                             {isNaN(years) ? "--" : years}
                         </span>{" "}
                         years
                     </div>
-                    <div className="text-6xl font-bold italic">
+                    <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
                             {isNaN(months) ? "--" : months}
                         </span>{" "}
                         months
                     </div>
-                    <div className="text-6xl font-bold italic">
+                    <div className="text-5xl font-bold italic sm:text-6xl">
                         <span className="text-purple-800">
                             {isNaN(days) ? "--" : days}
                         </span>{" "}
