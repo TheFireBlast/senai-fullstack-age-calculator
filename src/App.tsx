@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import { useState } from "react";
 import Input from "./Input";
 
@@ -24,14 +26,13 @@ function useAge(initialInfo: BirthDate, now: Date) {
             return [{ years: NaN, months: NaN, days: NaN }, errors];
         }
 
-        const date = new Date(info.year, info.month - 1, info.day);
+        const n = moment();
+        const m = moment(`${info.year}-${info.month}-${info.day}`);
 
-        const diff = Math.floor(now.getTime() - date.getTime());
-        const day = 1000 * 60 * 60 * 24;
-
-        const days = Math.floor(diff / day);
-        const months = Math.floor(days / 31);
-        const years = Math.floor(months / 12);
+        var diffDuration = moment.duration(n.diff(m));
+        const days = diffDuration.days();
+        const months = diffDuration.months();
+        const years = diffDuration.years();
 
         return [
             {
@@ -88,10 +89,13 @@ function getBirthErrors(
         }
     }
 
-    const time = new Date(`${year}-${month}-${day}`).getTime();
+    const date = new Date(`${year}-${month}-${day}`);
+    const time = date.getTime();
     if (isNaN(day)) d = "required field";
     else if (day <= 0 || day > 31) d = "invalid day";
-    else {
+    else if (Math.abs(day - date.getUTCDate()) > 1) {
+        d = "invalid day";
+    } else {
         if (!past && time > now) {
             d = "must be in the past";
         }
